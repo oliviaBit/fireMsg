@@ -1,0 +1,44 @@
+body,
+body * {
+  text-align: center;
+}
+/* ////////////////////////////// */
+
+dialog::backdrop {
+  background: repeating-linear-gradient(45deg, rgba(255, 0, 0, 0.2), rgba(255, 0, 0, 0.2) 1px, rgba(255, 0, 0, 0.3) 1px, rgba(255, 0, 0, 0.3) 20px);
+}
+dialog p {
+  line-height: 1.8;
+}
+dialog .ft {
+  text-align: right;
+}
+
+/* \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+
+.mynotify .btn {
+  margin-left: auto;
+  background: none;
+  border: 0;
+}
+.mynotify * {
+  text-align: left;
+}
+.mynotify h3 {
+  display: flex;
+  margin: 0 0 1em;
+}
+.mynotify img.block {
+  border-radius: 0.4em;
+  display: block;
+  box-shadow: 0 0 0.5em rgb(0, 0, 0, 0.33);
+  max-width: 100%;
+}
+.mynotify p {
+  text-align: left;
+  font-size: 0.8em;
+}
+.mynotify p img {
+  vertical-align: top;
+  border-radius: 50%;
+}
