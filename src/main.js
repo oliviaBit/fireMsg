@@ -3,7 +3,7 @@ import { getMessaging, getToken, onMessage } from "firebase/messaging";
 import { getDatabase, ref, set, onValue, remove, update } from "firebase/database";
 import dialogPolyfill from "dialog-polyfill";
 
-(async function () {
+(function () {
   const firebaseConfig = {
     apiKey: "AIzaSyByhp6DO2hWpnI1yQQC76ohBrKyZstW0D0",
     authDomain: "bti-internal-tw01.firebaseapp.com",
@@ -36,31 +36,26 @@ import dialogPolyfill from "dialog-polyfill";
   const dialog = document.querySelector("dialog");
   dialogPolyfill.registerDialog(dialog);
   //
-  const userName = getCname("userName");
+
   const teachUi = document.querySelector("#my_notify2");
   const db = getDatabase();
   const startRef = ref(db, `users/`);
-  let hasUser;
-
+  let userName = getCname("userName");
   //
   // =============================================================
   onMessage(messaging, (payload) => {
     console.log("Message received. ", payload);
     const options = {
-      body: ":DDD" + payload.notification.body,
+      body: "👽" + payload.notification.body,
       icon: payload.notification.icon
     };
-    let myNotify = new Notification("~~~~" + payload.notification.title, options);
+    let myNotify = new Notification(payload.notification.title, options);
   });
   onValue(startRef, (snapshot) => {
     const data = snapshot.val();
     //
     console.log("onValue:", data);
-    if (data?.hasOwnProperty(userName)) {
-      hasUser = true;
-    }
   });
-
   // order btn ui
   document.querySelector(".btn[data-val=onan]").addEventListener("click", function (e) {
     teachUi.showModal();
@@ -78,7 +73,7 @@ import dialogPolyfill from "dialog-polyfill";
   // 訂閱按鈕出現解鎖說明 (...below)
   // 允許後自動關閉解鎖說明 (與移除按鈕)
   // =============
-  console.log("/// userName:", userName, "/// hasUser", hasUser, "/// my Notification.permission:", Notification.permission);
+  console.log("/// userName:", userName, "/// my Notification.permission:", Notification.permission);
   //
   if (Notification.permission === "granted") {
     // user 重新產生訂閱，新增新的 token
@@ -102,6 +97,9 @@ import dialogPolyfill from "dialog-polyfill";
   function initPermission() {
     // 說明 ui
     teachUi.showModal();
+    if (!userName) {
+      userName = getCname("userName");
+    }
     // brw 是否訂閱
     Notification.requestPermission().then(function (answer) {
       if (answer === "granted") {
@@ -176,9 +174,23 @@ import dialogPolyfill from "dialog-polyfill";
     let userName = getCookieVal(cname);
     if (!userName) {
       userName = prompt("username?");
+      if (userName !== null) {
+        userName = userName.trim();
+      }
+      if (userName === null || userName === "") userName = getCname(cname);
       setCookie(cname, userName);
     }
+
     return userName;
+  }
+  function ifNoName() {
+    let name;
+    if (!userName) {
+      name = getCname("userName");
+    } else {
+      name = userName;
+    }
+    return name;
   }
   // ==========================================
   // Utilities
