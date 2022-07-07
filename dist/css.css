@@ -3,9 +3,8 @@ body * {
   text-align: center;
 }
 /* ////////////////////////////// */
-
 dialog::backdrop {
-  background: repeating-linear-gradient(45deg, rgba(255, 0, 0, 0.2), rgba(255, 0, 0, 0.2) 1px, rgba(255, 0, 0, 0.3) 1px, rgba(255, 0, 0, 0.3) 20px);
+  background: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2) 1px, rgba(0, 0, 0, 0.3) 1px, rgba(0, 0, 0, 0.3) 20px);
 }
 dialog p {
   line-height: 1.8;
@@ -15,11 +14,13 @@ dialog .ft {
 }
 
 /* \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
-
-.mynotify .btn {
-  margin-left: auto;
-  background: none;
-  border: 0;
+.mynotify {
+  border: none;
+  border-radius: 0.35em;
+  padding: 1.5em;
+  overflow: visible;
+  background: #292a2d;
+  color: #ddd;
 }
 .mynotify * {
   text-align: left;
@@ -28,12 +29,6 @@ dialog .ft {
   display: flex;
   margin: 0 0 1em;
 }
-.mynotify img.block {
-  border-radius: 0.4em;
-  display: block;
-  box-shadow: 0 0 0.5em rgb(0, 0, 0, 0.33);
-  max-width: 100%;
-}
 .mynotify p {
   text-align: left;
   font-size: 0.8em;
@@ -41,4 +36,17 @@ dialog .ft {
 .mynotify p img {
   vertical-align: top;
   border-radius: 50%;
+}
+.mynotify img.block {
+  border-radius: 0.4em;
+  display: block;
+  box-shadow: 0 0 1em rgb(0, 0, 0, 0.33);
+  /* min-width: 100%; */
+  margin: 1em -1.5em -1.5em;
+}
+.mynotify .btn {
+  margin-left: auto;
+  background: none;
+  border: 0;
+  color: #eee;
 }
