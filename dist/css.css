@@ -50,3 +50,6 @@ dialog .ft {
   border: 0;
   color: #eee;
 }
+.btn-hidden {
+  display: none;
+}

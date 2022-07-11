@@ -40,7 +40,7 @@ import dialogPolyfill from "dialog-polyfill";
   const teachUi = document.querySelector("#my_notify2");
   const db = getDatabase();
   const startRef = ref(db, `users/`);
-  let userName = getCname("userName");
+  let userName = getUserName("userName");
   //
   // =============================================================
   onMessage(messaging, (payload) => {
@@ -56,26 +56,27 @@ import dialogPolyfill from "dialog-polyfill";
     //
     console.log("onValue:", data);
   });
+
   // order btn ui
-  document.querySelector(".btn[data-val=onan]").addEventListener("click", function (e) {
-    teachUi.showModal();
+  document.querySelector(".btn[data-val=order]").addEventListener("click", function (e) {
+    getPermission();
   });
+  // tech btn ui
+  // document.querySelector(".btn[data-val=how]").addEventListener("click", function (e) {
+  //   teachUi.showModal();
+  // });
   // teachUi
   teachUi.querySelector(".btn[data-val=my_notify2_ok]").addEventListener("click", function (e) {
     teachUi.close();
   });
   //
   // =============================================================
-  // 瀏覽器支援 sw?
-  // if ("serviceWorker" in navigator) {
-  // 有支援 && 且尚未授權 才出現訂閱按鈕
-  // 如果要訂閱才點訂閱按鈕
-  // 訂閱按鈕出現解鎖說明 (...below)
-  // 允許後自動關閉解鎖說明 (與移除按鈕)
-  // =============
+
   console.log("/// userName:", userName, "/// my Notification.permission:", Notification.permission);
   //
-  if (Notification.permission === "granted") {
+  if (Notification.permission === "default") {
+    document.querySelector(".btn[data-val=order]").classList.remove("btn-hidden");
+  } else if (Notification.permission === "granted") {
     // user 重新產生訂閱，新增新的 token
     getToken(messaging, { vapidKey: firebaseConfig.msgVapidKey })
       .then((currentToken) => {
@@ -86,28 +87,27 @@ import dialogPolyfill from "dialog-polyfill";
       .catch((err) => {
         console.log("!!! firebase getToken ERROR. ", err);
       });
-  } else if (Notification.permission === "default") {
-    // 詢問 是否訂閱 // user data 重設
-    initPermission();
   } else if (Notification.permission === "denied") {
     // user 改為不訂閱
     updateUserData(Notification.permission);
   }
   // =============================================================
-  function initPermission() {
+  function getPermission() {
+    if (!userName) {
+      userName = getUserName("userName");
+    }
     // 說明 ui
     teachUi.showModal();
-    if (!userName) {
-      userName = getCname("userName");
+    if (Notification.permission === "default") {
+      // brw 是否訂閱
+      Notification.requestPermission().then(function (answer) {
+        if (answer === "granted") {
+          teachUi.close();
+          // 有 br 許可，建立 getToken 送 fire
+          saveUser(answer);
+        }
+      });
     }
-    // brw 是否訂閱
-    Notification.requestPermission().then(function (answer) {
-      if (answer === "granted") {
-        teachUi.close();
-        // 有 br 許可，建立 getToken 送 fire
-        saveUser(answer);
-      }
-    });
   }
   function saveUser(isSub) {
     getToken(messaging, { vapidKey: firebaseConfig.msgVapidKey })
@@ -158,7 +158,19 @@ import dialogPolyfill from "dialog-polyfill";
         console.log("updateUserData err");
       });
   }
+  function getUserName(cname) {
+    let userName = getCookieVal(cname);
+    if (!userName) {
+      userName = prompt("username?");
+      if (userName !== null) {
+        userName = userName.trim();
+      }
+      if (userName === null || userName === "") userName = getUserName(cname);
+      setCookie(cname, userName);
+    }
 
+    return userName;
+  }
   function delUser() {
     // 移除 user
     const db = getDatabase();
@@ -169,28 +181,6 @@ import dialogPolyfill from "dialog-polyfill";
       .catch((error) => {
         console.log("delUser err");
       });
-  }
-  function getCname(cname) {
-    let userName = getCookieVal(cname);
-    if (!userName) {
-      userName = prompt("username?");
-      if (userName !== null) {
-        userName = userName.trim();
-      }
-      if (userName === null || userName === "") userName = getCname(cname);
-      setCookie(cname, userName);
-    }
-
-    return userName;
-  }
-  function ifNoName() {
-    let name;
-    if (!userName) {
-      name = getCname("userName");
-    } else {
-      name = userName;
-    }
-    return name;
   }
   // ==========================================
   // Utilities
